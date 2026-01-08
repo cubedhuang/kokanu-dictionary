@@ -22,7 +22,7 @@
 			{ name: 'family', weight: 0.2 }
 		],
 		ignoreLocation: true,
-		threshold: 0.25,
+		threshold: 0.2,
 		useExtendedSearch: true
 	};
 
