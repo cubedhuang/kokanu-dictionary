@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { distance } from 'fastest-levenshtein';
 	import VirtualScroll from 'svelte-virtual-scroll-list';
+	import Fuse, { type IFuseOptions } from 'fuse.js';
 
 	import { darkMode, savedWritable } from '$lib/stores';
 	import { wordTypeBorderColors, type Word } from '$lib/types';
@@ -10,63 +10,34 @@
 
 	export let data;
 
+	const FUSE_OPTIONS: IFuseOptions<Word> = {
+		keys: [
+			{ name: 'word', weight: 1 },
+			{ name: 'likanu', weight: 1 },
+			{ name: 'meaning', weight: 1 },
+			{ name: 'noun', weight: 0.4 },
+			{ name: 'verb', weight: 0.4 },
+			{ name: 'modifier', weight: 0.4 },
+			{ name: 'origin', weight: 0.2 },
+			{ name: 'family', weight: 0.2 }
+		],
+		ignoreLocation: true,
+		threshold: 0.25
+	};
+
 	const view = savedWritable<'normal' | 'compact'>('wordView', 'normal');
 
 	let shownTypes: string[] = [];
 
-	const normalize = (str: string) =>
-		str
-			.normalize('NFD')
-			.replace(/[\u0300-\u036f]/g, '')
-			.toLowerCase()
-			.trim();
-
 	let search = '';
-	$: fixedSearch = normalize(search);
-
-	function scoreMatch(str: string) {
-		if (!str) return 0;
-
-		const normalized = normalize(str);
-
-		const includes = normalized.includes(fixedSearch);
-
-		if (includes) {
-			return str === fixedSearch ? 10 : 1;
-		}
-
-		const distanceScore =
-			distance(normalized, fixedSearch) / (normalized.length + 1);
-
-		if (distanceScore > 0.5) return 0;
-
-		return 1 - distanceScore;
-	}
-
-	function scoreWord(word: Word) {
-		return (
-			scoreMatch(word.word) * 100 +
-			scoreMatch(word.meaning) * 50 +
-			scoreMatch(word.noun) * 20 +
-			scoreMatch(word.verb) * 20 +
-			scoreMatch(word.modifier) * 20 +
-			scoreMatch(word.type) * 20 +
-			scoreMatch(word.origin) * 20 +
-			scoreMatch(word.family) * 20
-		);
-	}
 
 	$: genericFilteredWords = !shownTypes.length
 		? data.words
 		: data.words.filter((word: Word) => shownTypes.includes(word.type));
-
-	$: filteredWords = !fixedSearch
-		? genericFilteredWords
-		: genericFilteredWords
-				.map(word => [word, scoreWord(word)] as [Word, number])
-				.filter(([_, score]) => score > 19)
-				.sort(([, a], [, b]) => b - a)
-				.map(([word]) => word);
+	$: fuse = new Fuse(genericFilteredWords, FUSE_OPTIONS);
+	$: filteredWords = search.trim()
+		? fuse.search(search).map(result => result.item)
+		: genericFilteredWords;
 
 	function group6<T>(array: T[]): T[][] {
 		const result: T[][] = [];
