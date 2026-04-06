@@ -8,7 +8,7 @@
 	<a href="/{word.word}" class="hocus-visible:text-blue-500 transition">
 		<span class="font-bold">{word.word}</span>
 		&middot;
-		<span class="font-bold">{word.likanu}</span>
+		<span class="font-bold font-noto">{word.likanu}</span>
 	</a>
 	<span class="text-xs {wordTypeTextColors[word.type]}">
 		{word.type.toLowerCase()}

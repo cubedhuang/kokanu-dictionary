@@ -40,7 +40,7 @@
 
 <div class="flex justify-between items-end">
 	<h1 class="text-3xl font-bold">
-		{word.word} &middot; {word.likanu}
+		{word.word} &middot; <span class="font-noto">{word.likanu}</span>
 	</h1>
 
 	<div class="flex gap-2">

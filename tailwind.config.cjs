@@ -9,7 +9,8 @@ const config = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Inter', ...defaultTheme.fontFamily.sans]
+				sans: ['Inter', ...defaultTheme.fontFamily.sans],
+				noto: ['"Noto Sans Variable"', ...defaultTheme.fontFamily.sans]
 			},
 			colors: {
 				kokanu: '#1d328f',
