@@ -23,6 +23,7 @@ export type Word = {
 	origin: string;
 	ipa: string;
 	family: string;
+	synonyms?: string;
 };
 
 export const wordTypeBackgroundColors: Record<WordType, string> = {

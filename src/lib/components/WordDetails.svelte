@@ -3,11 +3,19 @@
 
 	export let word: Word;
 	export let compact = true;
+	export let showSynonyms = false;
 </script>
 
 <div class:compact>
 	<p class="faded">{word.type.toLowerCase()}</p>
 	<p class="space">{word.meaning}</p>
+
+	{#if showSynonyms && word.synonyms && word.synonyms !== '-'}
+	<p class="mt-2">
+		<b>Synonyms</b> &middot;
+		{word.synonyms}
+	</p>
+	{/if}
 
 	{#if word.noun !== '-'}
 		<p class="space">

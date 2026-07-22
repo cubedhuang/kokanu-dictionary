@@ -10,34 +10,56 @@
 
 	export let data;
 
+	const BASE_FUSE_KEYS: IFuseOptions<Word>['keys'] = [
+		{ name: 'word', weight: 1 },
+		{ name: 'likanu', weight: 1 },
+		{ name: 'meaning', weight: 1 },
+		{ name: 'noun', weight: 0.4 },
+		{ name: 'verb', weight: 0.4 },
+		{ name: 'modifier', weight: 0.4 },
+		{ name: 'origin', weight: 0.2 },
+		{ name: 'family', weight: 0.2 }
+	];
+
 	const FUSE_OPTIONS: IFuseOptions<Word> = {
-		keys: [
-			{ name: 'word', weight: 1 },
-			{ name: 'likanu', weight: 1 },
-			{ name: 'meaning', weight: 1 },
-			{ name: 'noun', weight: 0.4 },
-			{ name: 'verb', weight: 0.4 },
-			{ name: 'modifier', weight: 0.4 },
-			{ name: 'origin', weight: 0.2 },
-			{ name: 'family', weight: 0.2 }
-		],
+		keys: BASE_FUSE_KEYS,
 		ignoreLocation: true,
 		threshold: 0.2,
 		useExtendedSearch: true
 	};
 
-	const view = savedWritable<'normal' | 'compact'>('wordView', 'normal');
+	const view = savedWritable<'normal' | 'compact'>(
+		'wordView',
+		'normal'
+	);
 
 	let shownTypes: string[] = [];
-
 	let search = '';
+	let searchSynonyms = true;
 
 	$: genericFilteredWords = !shownTypes.length
 		? data.words
-		: data.words.filter((word: Word) => shownTypes.includes(word.type));
-	$: fuse = new Fuse(genericFilteredWords, FUSE_OPTIONS);
+		: data.words.filter((word: Word) =>
+				shownTypes.includes(word.type)
+			);
+
+	$: activeFuseOptions = {
+		...FUSE_OPTIONS,
+		keys: searchSynonyms
+			? [
+					...(BASE_FUSE_KEYS ?? []),
+					{ name: 'synonyms', weight: 0.7 }
+				]
+			: BASE_FUSE_KEYS
+	} satisfies IFuseOptions<Word>;
+
+	$: fuse = new Fuse<Word>(
+		genericFilteredWords,
+		activeFuseOptions
+	);
+
 	$: filteredWords = search.trim()
-		? fuse.search(search).map(result => result.item)
+		? fuse.search(search).map((result) => result.item)
 		: genericFilteredWords;
 
 	function group6<T>(array: T[]): T[][] {
@@ -46,7 +68,7 @@
 		for (let i = 0; i < array.length; i += 6) {
 			const group = array.slice(i, i + 6);
 
-			// @ts-expect-error Required for VirtualScroll
+			// @ts-expect-error Required by VirtualScroll's key property.
 			group.key = i;
 
 			result.push(group);
@@ -63,17 +85,25 @@
 		name="description"
 		content="Interactive dictionary for the IAL Kokanu."
 	/>
-	<meta name="keywords" content="kokanu, dictionary, interactive" />
+	<meta
+		name="keywords"
+		content="kokanu, dictionary, interactive"
+	/>
 
-	<meta property="og:title" content="pata je iwe ikama" />
+	<meta
+		property="og:title"
+		content="pata je iwe ikama"
+	/>
 	<meta
 		property="og:description"
 		content="Interactive dictionary for the IAL Kokanu."
 	/>
 </svelte:head>
 
-<div class="flex justify-between items-end">
-	<h1 class="text-2xl sm:text-3xl font-bold">pata je iwe ikama</h1>
+<div class="flex items-end justify-between">
+	<h1 class="text-2xl font-bold sm:text-3xl">
+		pata je iwe ikama
+	</h1>
 
 	<div class="flex gap-2">
 		<a
@@ -81,6 +111,8 @@
 			class="interactive p-2"
 			target="_blank"
 			rel="noopener noreferrer"
+			aria-label="Open GitHub repository"
+			title="GitHub repository"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -90,21 +122,30 @@
 				stroke="currentColor"
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				class="w-6 h-6"
-				><path
-					d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-				/><path d="M9 18c-4.51 2-5-2-7-2" /></svg
+				class="h-6 w-6"
+				aria-hidden="true"
 			>
+				<path
+					d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+				/>
+				<path d="M9 18c-4.51 2-5-2-7-2" />
+			</svg>
 		</a>
 
-		<a href="/wisan-ikama" class="interactive p-2">
+		<a
+			href="/wisan-ikama"
+			class="interactive p-2"
+			aria-label="Open word information"
+			title="Word information"
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 24 24"
 				stroke-width="1.5"
 				stroke="currentColor"
-				class="w-6 h-6"
+				class="h-6 w-6"
+				aria-hidden="true"
 			>
 				<path
 					stroke-linecap="round"
@@ -115,9 +156,16 @@
 		</a>
 
 		<button
+			type="button"
 			class="interactive p-2"
+			aria-label={$darkMode
+				? 'Switch to light mode'
+				: 'Switch to dark mode'}
+			title={$darkMode
+				? 'Switch to light mode'
+				: 'Switch to dark mode'}
 			on:click={() => {
-				darkMode.update(value => !value);
+				darkMode.update((value) => !value);
 			}}
 		>
 			{#if $darkMode}
@@ -127,7 +175,8 @@
 					viewBox="0 0 24 24"
 					stroke-width="1.5"
 					stroke="currentColor"
-					class="w-6 h-6"
+					class="h-6 w-6"
+					aria-hidden="true"
 				>
 					<path
 						stroke-linecap="round"
@@ -142,7 +191,8 @@
 					viewBox="0 0 24 24"
 					stroke-width="1.5"
 					stroke="currentColor"
-					class="w-6 h-6"
+					class="h-6 w-6"
+					aria-hidden="true"
 				>
 					<path
 						stroke-linecap="round"
@@ -155,21 +205,27 @@
 	</div>
 </div>
 
-<p class="mt-4">Interactive dictionary for the IAL Kokanu.</p>
+<p class="mt-4">
+	Interactive dictionary for the IAL Kokanu.
+</p>
 
 <p class="mt-4">
-	<select class="interactive px-2 py-1" bind:value={$view}>
+	<select
+		class="interactive px-2 py-1"
+		bind:value={$view}
+		aria-label="Dictionary view"
+	>
 		<option value="normal">Normal View</option>
 		<option value="compact">Compact View</option>
 	</select>
 </p>
 
-<div class="mt-2 flex gap-1 flex-wrap">
+<div class="mt-2 flex flex-wrap gap-1">
 	{#each data.types as type}
 		{@const active = shownTypes.includes(type)}
 
 		<label
-			class="box px-2 py-1 cursor-pointer transition
+			class="box cursor-pointer px-2 py-1 transition
 				{active
 				? 'hocus-visible:bg-zinc-100 dark:hocus-visible:bg-zinc-800'
 				: 'faded border-opacity-25 dark:border-opacity-25'}
@@ -181,24 +237,46 @@
 				bind:group={shownTypes}
 				value={type}
 			/>
+
 			{type}
 		</label>
 	{/each}
 </div>
 
-<p class="mt-4">
+<div class="mt-4">
 	<span class="faded">
 		{filteredWords.length} /
 		{genericFilteredWords.length}
 	</span>
 
-	<input
-		type="text"
-		class="mt-1 block input px-4 py-2"
-		placeholder="o jatan..."
-		bind:value={search}
-	/>
-</p>
+	<div
+		class="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center"
+	>
+		<input
+			type="text"
+			class="input flex-1 px-4 py-2"
+			placeholder="o jatan..."
+			bind:value={search}
+			aria-label="Search dictionary"
+		/>
+
+		<label
+			class="box cursor-pointer whitespace-nowrap px-3 py-2 transition
+				{searchSynonyms
+					? 'bg-zinc-100 dark:bg-zinc-800'
+					: 'faded border-opacity-50'}"
+			title="Search and display synonyms"
+		>
+			<input
+				type="checkbox"
+				class="sr-only"
+				bind:checked={searchSynonyms}
+			/>
+
+			{searchSynonyms ? '✓' : '+'} Synonyms
+		</label>
+	</div>
+</div>
 
 {#if $view === 'normal'}
 	{@const groupedWords = group6(filteredWords)}
@@ -210,9 +288,14 @@
 		pageMode
 		keeps={10}
 	>
-		<div class="mt-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div
+			class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+		>
 			{#each group as word (word.word)}
-				<WordBox {word} />
+				<WordBox
+					{word}
+					showSynonyms={searchSynonyms}
+				/>
 			{/each}
 		</div>
 	</VirtualScroll>
@@ -225,7 +308,10 @@
 			pageMode
 			keeps={100}
 		>
-			<WordLine {word} />
+			<WordLine
+				{word}
+				showSynonyms={searchSynonyms}
+			/>
 		</VirtualScroll>
 	</div>
 {/if}

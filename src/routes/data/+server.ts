@@ -18,7 +18,8 @@ const keys: Record<string, keyof Word> = {
 	Antonym: 'antonym',
 	Origin: 'origin',
 	IPA: 'ipa',
-	Family: 'family'
+	Family: 'family',
+	Synonyms: 'synonyms'
 };
 
 export async function GET({ fetch, setHeaders }) {
