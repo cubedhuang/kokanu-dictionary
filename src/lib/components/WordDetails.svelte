@@ -24,6 +24,12 @@
 		</p>
 	{/if}
 
+	{#if word.synonyms}
+		<p class="space">
+			<b>Synonyms</b> &middot;
+			{word.synonyms}
+		</p>
+	{/if}
 	{#if word.antonym}
 		<p class="space">
 			<b>Antonym</b> &middot;

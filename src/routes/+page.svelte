@@ -15,11 +15,13 @@
 			{ name: 'word', weight: 1 },
 			{ name: 'likanu', weight: 1 },
 			{ name: 'meaning', weight: 1 },
+			{ name: 'synonyms', weight: 0.5 },
 			{ name: 'noun', weight: 0.4 },
 			{ name: 'verb', weight: 0.4 },
 			{ name: 'modifier', weight: 0.4 },
 			{ name: 'origin', weight: 0.2 },
-			{ name: 'family', weight: 0.2 }
+			{ name: 'family', weight: 0.2 },
+			{ name: 'antonym', weight: 0.1 }
 		],
 		ignoreLocation: true,
 		threshold: 0.2,

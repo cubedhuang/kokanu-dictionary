@@ -19,6 +19,7 @@ export type Word = {
 	verb: string;
 	modifier: string;
 	antonym: string;
+	synonyms: string;
 
 	origin: string;
 	ipa: string;
