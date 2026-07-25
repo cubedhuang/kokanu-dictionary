@@ -61,3 +61,12 @@ export const wordTypeBorderColors: Record<WordType, string> = {
 	Quantity: 'border-violet-400 dark:border-violet-600',
 	Verb: 'border-fuchsia-400 dark:border-fuchsia-600'
 };
+
+export type PhraseType = 'Noun' | 'Verb' | 'Modifier';
+
+export type Phrase = {
+	phrase: string;
+	likanu: string;
+	type: PhraseType;
+	meaning: string;
+};

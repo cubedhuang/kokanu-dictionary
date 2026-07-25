@@ -1,7 +1,7 @@
 import type { Word, WordType } from '$lib/types';
 
 export async function load({ fetch }) {
-	const words: Word[] = await fetch('/data').then(r => r.json());
+	const words: Word[] = await fetch('/api/words').then(r => r.json());
 
 	const types = new Set<string>();
 

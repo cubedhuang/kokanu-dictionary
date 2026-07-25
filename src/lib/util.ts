@@ -1,14 +1,18 @@
-import type { Word } from './types';
+import type { Phrase, Word } from './types';
 
 const order = 'ptkcwljmnshaieou'.split('');
 
-export function sortAlphabetically(a: string | Word, b: string | Word) {
+export function sortAlphabetically(
+	a: string | Word | Phrase,
+	b: string | Word | Phrase
+) {
 	if (typeof a === 'object') {
-		a = a.word;
+		if ('word' in a) a = a.word;
+		else a = a.phrase;
 	}
-
 	if (typeof b === 'object') {
-		b = b.word;
+		if ('word' in b) b = b.word;
+		else b = b.phrase;
 	}
 
 	const length = Math.min(a.length, b.length);

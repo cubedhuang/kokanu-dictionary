@@ -4,7 +4,7 @@
 
 A dictionary for the IAL Kokanu. Data is dynamically retrieved from the Google Sheets [here](https://docs.google.com/spreadsheets/d/1SiXXmQUrQ2KI7SRV3Hp_FP53HDteuuMF1ZJ_d_AwBr4/edit?gid=0#gid=0) and displayed in a more easily searchable format online.
 
-A JSON of the data used can be found at [/data](https://dictionary.kokanu.com/data). It is a `Word` array, defined below.
+A JSON of the words used can be found at [/api/words](https://dictionary.kokanu.com/api/words). It is a `Word` array, defined below.
 
 ```ts
 type Word = {
