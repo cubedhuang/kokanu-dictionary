@@ -34,3 +34,19 @@ type WordType =
 	| 'Quantity'
 	| 'Verb';
 ```
+
+A JSON of phrases on the sheet may be found at [/api/phrases](https://dictionary.kokanu.com/api/phrases), defined as a `Phrase` array:
+
+```ts
+type Phrase = {
+	word: string;
+	likanu: string;
+	type: PhraseType;
+	meaning: string;
+};
+
+type PhraseType =
+	| 'Modifier'
+	| 'Noun'
+	| 'Verb';
+```
