@@ -88,7 +88,7 @@
 
 		<a
 			href="https://kokanu.com"
-			class="ml-auto text-sm flex text-blue-200 hocus:text-white transition font-medium"
+			class="ml-auto text-sm py-1 border-2 border-transparent my-1 flex text-blue-200 hocus:text-white transition font-medium"
 		>
 			kokanu.com
 		</a>
