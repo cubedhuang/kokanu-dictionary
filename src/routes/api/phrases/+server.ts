@@ -16,7 +16,6 @@ const keys: Record<string, keyof Phrase> = {
 
 export async function GET({ fetch, setHeaders }) {
 	const url = `${SHEETS_API_BASE}/${SHEET_ID}/values/${SHEET_NAME}?key=${GOOGLE_KEY}`;
-	console.log(url);
 	const response = await fetch(url);
 
 	if (!response.ok) {

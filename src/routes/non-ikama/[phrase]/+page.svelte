@@ -85,7 +85,7 @@
 
 <PhraseDetails {phrase} compact={false} />
 
-<p>
+<p class="mt-4">
 	see
 	{#each phrase.phrase.split(' ') as word, i}
 		{#if i !== 0}, {/if}
